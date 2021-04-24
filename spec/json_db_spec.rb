@@ -5,7 +5,7 @@ RSpec.describe JsonDb do
   before(:example) do
     system("cp ./db.json /tmp/db.json")
     @db = JsonDb.new("/tmp/db.json")
-    @db.serialize
+    #@db.serialize
   end
   
   # Sample implementation with :method_missing
@@ -23,6 +23,7 @@ RSpec.describe JsonDb do
   it "writes properties on all levels" do
     @db.companies[0].employees[0].first_name = "Nick"
     expect(@db.companies[0].employees[0].first_name).to eq("Nick")
+    @db.serialize
     expect(JSON.parse(IO.read(@db.json_filename))["companies"][0]["employees"][0]["first_name"]).to eq("Nick")
   end
 

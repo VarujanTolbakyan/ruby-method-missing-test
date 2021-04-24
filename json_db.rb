@@ -1,4 +1,6 @@
 require 'json'
+require_relative './mixture'
+
 class JsonDb
   
   def initialize(json_filename)
@@ -11,15 +13,20 @@ class JsonDb
     @data ||= JSON.parse(IO.read(json_filename))
   end
   
-  private
-  
   # Use this method to store updated properties on disk
   def serialize
     IO.write(json_filename, data.to_json)
   end
+  
+  private
 
-  def method_missing(method_name, *args, &block)
-    data[method_name.to_s]
+  def method_missing(method_name, *args)
+      method_name = method_name.to_s
+      if method_name.include? '='
+        data[method_name.sub('=', '')] = args.first
+      else
+        data[method_name]
+      end
   end
   
 end
